@@ -1,0 +1,27 @@
+﻿apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-ndlhk
+    field.cattle.io/ingressState: '{"YXBpLXRlc3Q=":"p-g4gbp:api-test","bm90ZXMtYXBpLWluZ3Jlc3MvbWljcm9zZXJ2aWNlcy10ZXN0L2FwaS10ZXN0Lm5vdGVzLmNoYXJ0ZXIuY29tLy9ub3Rlcy1hcGkvODA4MA==":""}'
+    field.cattle.io/publicEndpoints: '[{"addresses":["22.239.129.42"],"port":80,"protocol":"HTTP","serviceName":"microservices-test:notes-api","ingressName":"microservices-test:notes-api-ingress","hostname":"api-test.notes.charter.com","path":"/notes-api","allNodes":true}]'
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{"field.cattle.io/creatorId":"user-ndlhk","field.cattle.io/ingressState":"{\"YXBpLXRlc3Q=\":\"p-fq87k:api-test\",\"bm90ZXMtYXBpLWluZ3Jlc3MvZGV2ZWxvcG1lbnQvYXBpLXRlc3Qubm90ZXMuY2hhcnRlci5jb20vL25vdGVzLWFwaS84MDgw\":\"deployment:development:notes-api\"}","field.cattle.io/publicEndpoints":"[{\"addresses\":[\"22.239.129.42\"],\"port\":80,\"protocol\":\"HTTP\",\"serviceName\":\"development:ingress-e4fcc1c2cca0e3192300125edbcd5951\",\"ingressName\":\"development:notes-api-ingress\",\"hostname\":\"api-test.notes.charter.com\",\"path\":\"/notes-api\",\"allNodes\":true}]"},"creationTimestamp":null,"generation":1,"labels":{"cattle.io/creator":"norman"},"name":"notes-api-ingress","namespace":"microservices-test","selfLink":"/apis/extensions/v1beta1/namespaces/development/ingresses/notes-api-ingress"},"spec":{"rules":[{"host":"api-test.notes.charter.com","http":{"paths":[{"backend":{"serviceName":"ingress-e4fcc1c2cca0e3192300125edbcd5951","servicePort":8080},"path":"/notes-api"}]}}],"tls":[{"secretName":"api-test"}]},"status":{"loadBalancer":{}}}'
+  creationTimestamp: null
+  generation: 1
+  labels:
+    cattle.io/creator: norman
+  name: notes-api-ingress
+  selfLink: /apis/extensions/v1beta1/namespaces/microservices-test/ingresses/notes-api-ingress
+spec:
+  rules:
+  - host: api-test.notes.charter.com
+    http:
+      paths:
+      - backend:
+          serviceName: notes-api
+          servicePort: 8080
+        path: /notes-api
+  tls:
+  - secretName: api-test
+status:
+  loadBalancer: {}

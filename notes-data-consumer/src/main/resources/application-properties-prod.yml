@@ -1,0 +1,54 @@
+server:
+  port: 9595
+spring:
+  kafka:
+    bootstrap-servers: 22.239.144.4:9092,22.239.144.5:9092,22.239.144.6:9092,22.239.144.7:9092,22.239.144.8:9092,22.239.144.9:9092
+  jpa:
+    generate-ddl: false
+    show-sql: false
+    hibernate:
+      order_inserts: true
+      order_updates: true
+      generate_statistics: true
+      ddl-auto: update
+      connection:
+        autocommit: false
+      jdbc:
+        batch_size: 10000
+        batch_versioned_data: true
+  datasource:
+    url: jdbc:mysql://22.239.129.50:3306/notes_db?rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: notes
+    password: Sp3ctrum
+    hikari:
+      idleTimeout: 10000
+      minimumIdle: 5
+      maximumPoolSize: 10
+      connectionTimeout: 30000
+      autoCommit: false
+      poolName: NOTES_Hikari_Pool
+
+app:
+  topic:
+    properties: properties.account,properties.area,properties.awg,properties.bpsapplication,properties.bpssite,properties.cablemodem,properties.cdf,properties.cpe,properties.circuit,properties.cmts,properties.division,properties.dta,properties.enterprise,properties.equipmentbackplane,properties.equipmentchassis,properties.equipmentcontainer,properties.equipmentfan,properties.equipmentmodule,properties.equipmentpowersupply,properties.eventrakapplication,properties.facility,properties.host,properties.house,properties.hub,properties.interface,properties.iqdapplication,properties.macdomain,properties.mailldap,properties.market,properties.mgtarea,properties.modemldap,properties.module,properties.mta,properties.node,properties.olt,properties.onu,properties.poller,properties.qpsk,properties.qpskdemod,properties.ratecenter,properties.region,properties.router,properties.sdvservicegroup,properties.servicegroup,properties.settopbox,properties.sipgateway,properties.site,properties.vodservicegroup
+    snmpMetrics:
+    edgeData:
+  consumer:
+    group-id: notes-properties-data-consumer
+    client-id: notes-properties-data-consumer
+    auto-offset-reset: earliest
+    enable-auto-commit: true
+    poll-timeout: 4000
+    concurrency: 110
+    max-partition-fetch-bytes: 7048576
+    max-record-per-poll: 40000
+  json:
+    converter:
+      ignoreUnknown: false
+
+#logging:
+#  level:
+ #   root: ERROR
+ #   org.springframework.web: ERROR
+ #   com.memorynotfound: DEBUG

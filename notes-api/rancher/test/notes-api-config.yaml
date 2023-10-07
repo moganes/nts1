@@ -1,0 +1,59 @@
+﻿apiVersion: v1
+data:
+  application.yml: |-
+    server:
+      port: 8080
+      servlet:
+        context-path: /notes-api
+
+    management:
+      health:
+        defaults:
+          enabled: true
+      endpoints:
+        enabled-by-default: true
+        web:
+          exposure:
+            include: "*"
+
+    app:
+      elasticsearch:
+        endpoint: 22.239.129.62:9000
+        connection-timeout-ms: 30000
+        socket-timeout-ms: 30000
+        insertedTimeLessThan: now/m
+        insertedTimeGreaterThan: now-24h/m
+        smb-insertedTimeLessThan: now/m
+        smb-insertedTimeGreaterThan: now-30h/m
+      executor-service:
+        parallelism: 15
+      spectrumSo:
+        spcAccountDivision-url: https://spectrumcore.charter.com:7443/spectrum-core/services/account/ept/getSpcAccountDivisionV1x1
+        ws:
+          connection-timeout-ms: 30000
+          read-timeout-ms: 30000
+          keystore:
+            file-path: ./notes-prod-keystore.p12
+            password: 96yddujH3wFZ4YQ5
+          truststore:
+            file-path: ./so-prod-truststore.jks
+            password: c3rRN63gyY8VPpM8
+kind: ConfigMap
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-ndlhk
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"application.yml":"server:\n  port:
+      8080\n  servlet:\n    context-path: /notes-api\n\nmanagement:\n  health:\n    defaults:\n      enabled:
+      true\n  endpoints:\n    enabled-by-default: true\n    web:\n      exposure:\n        include:
+      \"*\"\n\napp:\n  elasticsearch:\n    endpoint: es-test.notes.charter.com:9000\n    connection-timeout-ms:
+      30000\n    socket-timeout-ms: 30000\n    insertedTimeLessThan: now/m\n    insertedTimeGreaterThan:
+      now-24h/m\n  executor-service:\n    parallelism: 15\n  spectrumSo:\n    spcAccountDivision-url:
+      https://spectrumcore.charter.com:7443/spectrum-core/services/account/ept/getSpcAccountDivisionV1x1\n    ws:\n      connection-timeout-ms:
+      30000\n      read-timeout-ms: 30000\n      keystore:\n        file-path: ./notes-prod-keystore.p12\n        password:
+      96yddujH3wFZ4YQ5\n      truststore:\n        file-path: ./so-prod-truststore.jks\n        password:
+      c3rRN63gyY8VPpM8"},"kind":"ConfigMap","metadata":{"annotations":{"field.cattle.io/creatorId":"user-ndlhk"},"creationTimestamp":null,"labels":{"cattle.io/creator":"norman"},"name":"notes-api-config","namespace":"microservices-test","selfLink":"/api/v1/namespaces/development/configmaps/notes-api-config"}}'
+  creationTimestamp: null
+  labels:
+    cattle.io/creator: norman
+  name: notes-api-config
+  selfLink: /api/v1/namespaces/microservices-test/configmaps/notes-api-config

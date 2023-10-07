@@ -1,0 +1,205 @@
+syntax="proto3";
+
+option java_package = "com.spectrum.notes.notesDataConsumer.model.protJava";
+option java_outer_classname = "DirtyEntities";
+
+enum DocsisVersion  {
+    v11 = 0; //DOCSIS Version 1.1
+    v20 = 1; //DOCSIS Version 2.0 
+    v21 = 3; //DOCSIS Version 2.1
+    v30 = 4; //DOCSIS Version 3.0
+    v31 = 5; //DOCSIS Version 3.1
+}
+
+// A Piece of equipment being tracked
+enum EquipmentType {
+	UnknownType = 0; // Unidentifiable Equipment
+	CmtsType = 1; // A CMTS
+	RouterType = 2; // A Router
+	QamType = 3; // A QAM
+	OltType = 4; // An OLT
+	ServerType = 5; // A Server
+	SwitchType = 6; // A Switch
+	BackboneType = 7; 
+	PowerSupplyType = 8; //A PowerSupply
+
+	MDType = 9; // A MacDomain
+	ServiceGroupType = 10; // A ServiceGroup
+	IfaceType = 11; // An Interface
+
+	CableModemType = 12; //A CableModem
+	OnuType = 13; // An ONU
+	EmbeddedMTAType = 14; // An Embedded MTA
+}
+
+// Entity Types within a piece of equipment
+enum EntityClass {
+    Nil = 0; // No known type
+    Other = 1; // 
+    Unknown = 2; //
+    Chassis = 3; // Chassis
+    Backplane = 4; //
+    Container = 5;     // e.g., chassis slot or daughter-card holder
+    PowerSupply = 6;
+    Fan = 7;
+    Sensor = 8;
+    Module = 9;        // e.g., plug-in card or daughter-card
+    Port = 10;
+    Stack = 11;        // e.g., stack of multiple chassis entities
+    Cpu = 12;
+}
+
+// Convenient abstraction embeded in Equipment Types
+message Base {
+    string id           = 1; // 40char HashKey ID used in LightHouse
+    string name         = 2; // Human Readable Name
+    string ip           = 3; // IP Address as string, v4 or v6
+    string community    = 4; // Community string used to SNMP equipment 
+    string sysdescr     = 5; // SysDescription polled from equipment
+    string serial       = 6; // Serial number polled from equipment
+    string make         = 7; // Manufacturer polled from equipment
+    string model        = 8; // Model polled from equipment
+    string physdescr    = 9; //
+    string swversion    = 10; // Software Version polled from equipment
+    string hwversion    = 11; // Hardware Version polled from equipment
+    EquipmentType eqtype= 12; // Type of equipment represented
+    uint32 lastpoll     = 13; // Last time we polled this piece of equipment
+}
+
+// Hardware Component within equipment
+message Entity {
+    string Id           =  1; // 40char HashKey ID used in LightHouse
+	string Descr        =  2; // Human Readable Description
+	EntityClass EClass   =  3; // Class of this Entity
+	string Name         =  4; // Human Readable Name
+	string Make         =  5; // Manufacturer
+	string Model        =  6; // Model
+	string Serial       =  7; // Serial number
+	string HwVersion    =  8; // Hardware Version of this Entity
+	string FwVersion    =  9; // Firmware Version of this Entity
+	string SwVersion    = 10; // Software Version of this Entity
+    uint32 Inside       = 11; // Index of Entity this Entity is contained within
+}
+
+// Abstraction of OLT and CMTS
+message DocsisRouter {
+    Base base = 1;  // Embedded Base properties abstraction
+    map<uint32, MacDomain> macdomains = 2; // Map of index to MacDomain
+    map<uint32, Interface> interfaces = 3; // Map of index to Interfaces
+    map<uint32, Entity> entities = 4; // Map of index to Entities
+}
+
+// CableModem Termination System
+message CMTS {
+    DocsisRouter dr=1; // Embedded DocsisRouter abstraction
+    map<uint32, CableModem> cablemodems = 2; //Map of index to CableModems
+}
+
+// Optical Line Termination
+message OLT {
+    DocsisRouter dr=1; //Embedded DocsisRouter abstraction
+    map<uint32, ONU> onus = 2; //Map of index to ONU
+}
+
+message Router {
+    Base base = 1;
+    map<uint32, Interface> interfaces = 2;
+    map<uint32, Entity> entities = 4;
+}
+
+// Optical Network Unit
+message ONU { 
+    Base base = 1; //Embedded Base properties abstraction
+    DocsisVersion dv = 2; // Docsis Version
+}
+
+// Cable Modem
+message CableModem { 
+    Base base           = 1; //Embedded Base properties abstraction
+    DocsisVersion dv    = 2; // Docsis Version
+
+    uint32 idx          = 3; // Index within the CMTS
+    uint32 uptime       = 4; // How long in time ticks this CableModem has been up
+    uint32 status       = 5; // Last known status from CMTS
+
+    map<uint32, Component> components = 6; //Map of index to embedded Component
+
+    uint32 sgidx        = 7; //Service Group index
+    uint32 mdidx        = 8; //Macdomain Index
+    map<uint32, string> upstream    = 9; //Map of local index to interface id for upstream
+    map<uint32, string> downstream  = 10; //Map of local index to interface id for downstream
+}
+
+// Component along side Cable Modem
+message Component {
+    string mac = 1; // Mac Address of Component
+    string ip = 2; // IP Address as string v4 or v6
+
+    // Type of component represented
+    enum ComponentType {
+        AWG = 0; // Advanced Wireless Gateway
+        MTA = 1; // Multimedia Terminal Adapter
+        STB = 2; // SetTopBox
+    }
+    ComponentType type = 3; // Type of Component represented
+}
+
+// MacDomain within DocsisRouter
+message MacDomain { 
+    string id                   =  1; // 40char HashKey ID used in LightHouse
+    string name                 =  2; // Human Readable Name of macdomain
+    uint32 idx                  =  3; // Index within DocsisRouter
+
+	uint32 mddinterval          =  4; // 
+	uint32 ipprovmode           =  5; // 
+	uint32 statusevctlenabled   =  6; // 
+	uint32 usfreqrange          =  7; // 
+	uint32 mcastdsidfwdenabled  =  8; // 
+	uint32 multrxchmodeenabled  =  9; // 
+	uint32 multtxchmodeenabled  = 10; // 
+	uint32 earlyauthencrctrl    = 11; // 
+	uint32 tftpproxyenabled     = 12; // 
+	uint32 srcaddrverifenabled  = 13; // 
+	uint32 downchannelannex     = 14; // 
+	uint32 cmudcenabled         = 15; // 
+	uint32 sendudcrulesenabled  = 16; // 
+	string servicetypeidlist    = 17; // 
+
+    map<uint32, ServiceGroup> ussg = 18; // Map of index to Upstream Service Group
+    map<uint32, ServiceGroup> dssg = 19; // Map of index to Downstream Service Group
+}
+
+
+// Logical Grouping of services within DocsisRouter
+message ServiceGroup { 
+    string id                       = 1; // 40char HashKey ID used in LightHouse
+    uint32 idx                      = 2; // Index of ServiceGroup within MacDomain
+    bool direction                  = 3; // Direction of data flow
+    map<uint32, uint32> ifacefreqs  = 4; // Map of Frequency to Index of Interface
+}
+
+// Interface 
+message Interface { 
+    string id           = 1; // 40char HashKey ID used in LightHouse
+	string name         = 2; // Human Readable Name
+    string alias        = 3; // Aka
+
+    uint32 type         = 4; // Interface Type (IANAifType)
+    bool direction      = 5; // Direction of data flow 
+
+    uint32 frequency    = 6; // Frequency in hz
+    uint32 width        = 7; // Width of transmission band (typically 6.4 or 3.2)
+
+    uint32 mtu          = 8; // 
+    uint32 speed        = 9; //
+    string physaddress  = 10; //
+
+    uint32 idx          = 11; // Index of Interface within DocsisRouter
+    uint32 chid         = 12; // Channel ID of interface
+    uint32 mdidx        = 13; // MacDomain Index
+
+    repeated uint32 sgidx  = 14; // Service Group indicies
+
+    string modulation   = 15; //Modulation of the interface (qam16,qam64, etc)
+    uint32 modprofile   = 16; //Modulation profile of upstream interface
+}

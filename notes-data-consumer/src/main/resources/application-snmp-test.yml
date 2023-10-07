@@ -1,0 +1,54 @@
+server:
+  port: 9292
+spring:
+  kafka:
+    bootstrap-servers: kafka-23.scope.charter.com:9092,kafka-24.scope.charter.com:9092,kafka-25.scope.charter.com:9092,kafka-26.scope.charter.com:9092
+  jpa:
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      order_inserts: true
+      order_updates: true
+      generate_statistics: true
+      ddl-auto: update
+      connection:
+        autocommit: false
+      jdbc:
+        batch_size: 20000
+        batch_versioned_data: true
+  datasource:
+    url: jdbc:mysql://22.239.129.50:3306/notes_db?rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: notes
+    password: Sp3ctrum
+    hikari:
+      idleTimeout: 10000
+      minimumIdle: 5
+      maximumPoolSize: 10
+      connectionTimeout: 30000
+      autoCommit: false
+      poolName: NOTES_Hikari_Pool
+
+app:
+  topic:
+    properties:
+    snmpMetrics: snmpmon.metrics
+    edgeData:
+  consumer:
+    group-id: notes-snmp-data-consumer-test
+    client-id: notes-snmp-data-consumer-test
+    auto-offset-reset: earliest
+    enable-auto-commit: true
+    poll-timeout: 8000
+    concurrency: 4
+    max-partition-fetch-bytes: 4194304
+    max-record-per-poll: 10000
+  json:
+    converter:
+      ignoreUnknown: true
+
+#logging:
+#  level:
+ #   root: ERROR
+ #   org.springframework.web: ERROR
+ #   com.memorynotfound: DEBUG

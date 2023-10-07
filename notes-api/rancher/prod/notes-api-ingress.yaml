@@ -1,0 +1,29 @@
+﻿apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-b8b7b
+    field.cattle.io/ingressState: '{"YXBpLXByb2Q=":"p-hxn6c:api-prod","bm90ZXMtYXBpLWluZ3Jlc3MvbWljcm9zZXJ2aWNlcy1sYXllci9hcGktcHJvZC5ub3Rlcy5jaGFydGVyLmNvbS8vbm90ZXMtYXBpLzgwODA=":"deployment:microservices-layer:notes-api"}'
+    field.cattle.io/publicEndpoints: '[{"addresses":["22.239.129.22"],"port":80,"protocol":"HTTP","serviceName":"microservices-layer:ingress-dc10bbd6e88fe3f558704d328f5ec9d9","ingressName":"microservices-layer:notes-api-ingress","hostname":"api-prod.notes.charter.com","path":"/notes-api","allNodes":true}]'
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "2000"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "2000"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "2000"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    cattle.io/creator: norman
+  name: notes-api-ingress
+  selfLink: /apis/extensions/v1beta1/namespaces/microservices-layer/ingresses/notes-api-ingress
+spec:
+  rules:
+  - host: api-prod.notes.charter.com
+    http:
+      paths:
+      - backend:
+          serviceName: ingress-dc10bbd6e88fe3f558704d328f5ec9d9
+          servicePort: 8080
+        path: /notes-api
+  tls:
+  - secretName: api-prod
+status:
+  loadBalancer: {}

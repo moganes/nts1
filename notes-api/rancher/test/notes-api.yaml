@@ -1,0 +1,89 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "27"
+    field.cattle.io/creatorId: user-ndlhk
+    field.cattle.io/publicEndpoints: '[{"addresses":["22.239.129.42"],"port":443,"protocol":"HTTPS","serviceName":"microservices-test:notes-api","ingressName":"microservices-test:notes-api-ingress","hostname":"api-test.notes.charter.com","path":"/notes-api","allNodes":true},{"addresses":["22.239.129.42"],"port":30929,"protocol":"TCP","serviceName":"microservices-test:notes-api-nodeport","allNodes":true}]'
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"deployment.kubernetes.io/revision":"19","field.cattle.io/creatorId":"user-ndlhk","field.cattle.io/publicEndpoints":"[{\"addresses\":[\"22.239.129.42\"],\"port\":31147,\"protocol\":\"TCP\",\"serviceName\":\"development:notes-api-nodeport\",\"allNodes\":true},{\"addresses\":[\"22.239.129.42\"],\"port\":80,\"protocol\":\"HTTP\",\"serviceName\":\"development:ingress-e4fcc1c2cca0e3192300125edbcd5951\",\"ingressName\":\"development:notes-api-ingress\",\"hostname\":\"api-test.notes.charter.com\",\"path\":\"/notes-api\",\"allNodes\":true}]"},"creationTimestamp":null,"generation":1,"labels":{"cattle.io/creator":"norman","workload.user.cattle.io/workloadselector":"deployment-development-notes-api"},"name":"notes-api","namespace":"microservices-test","selfLink":"/apis/apps/v1/namespaces/development/deployments/notes-api"},"spec":{"progressDeadlineSeconds":600,"replicas":2,"revisionHistoryLimit":10,"selector":{"matchLabels":{"workload.user.cattle.io/workloadselector":"deployment-development-notes-api"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"cattle.io/timestamp":"2021-03-09T20:01:30Z","field.cattle.io/ports":"[[{\"containerPort\":8080,\"dnsName\":\"notes-api-nodeport\",\"hostPort\":0,\"kind\":\"NodePort\",\"name\":\"8080tcp01\",\"protocol\":\"TCP\",\"sourcePort\":0}]]"},"creationTimestamp":null,"labels":{"workload.user.cattle.io/workloadselector":"deployment-development-notes-api"}},"spec":{"containers":[{"env":[{"name":"LOGGING_CONFIG","value":"/config/logback.xml"},{"name":"SPRING_CONFIG_LOCATION","value":"/appConfig/application.yml"}],"image":"98.8.61.7:5000/notes-api:0.0.10","imagePullPolicy":"Always","name":"notes-api","ports":[{"containerPort":8080,"name":"8080tcp01","protocol":"TCP"}],"resources":{},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{},"privileged":false,"readOnlyRootFilesystem":false,"runAsNonRoot":false},"stdin":true,"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","tty":true,"volumeMounts":[{"mountPath":"/appConfig","name":"application-config"},{"mountPath":"/config","name":"logback-config"},{"mountPath":"/var/notes","name":"log-dir"}]}],"dnsConfig":{},"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30,"volumes":[{"configMap":{"defaultMode":256,"name":"notes-api-dev-config","optional":false},"name":"application-config"},{"configMap":{"defaultMode":256,"name":"notes-api-dev-logback","optional":false},"name":"logback-config"},{"hostPath":{"path":"/var/notes","type":"DirectoryOrCreate"},"name":"log-dir"}]}}},"status":{}}'
+  creationTimestamp: null
+  generation: 1
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-development-notes-api
+  name: notes-api
+  selfLink: /apis/apps/v1/namespaces/microservices-test/deployments/notes-api
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-development-notes-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: "2022-01-07T21:43:01Z"
+        field.cattle.io/ports: '[[{"containerPort":8080,"dnsName":"notes-api-nodeport","hostPort":0,"kind":"NodePort","name":"8080tcp01","protocol":"TCP","sourcePort":0}]]'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-development-notes-api
+    spec:
+      containers:
+      - env:
+        - name: LOGGING_CONFIG
+          value: /config/logback.xml
+        - name: SPRING_CONFIG_LOCATION
+          value: /appConfig/application.yml
+        image: 98.8.61.7:5000/notes-api:0.0.19
+        imagePullPolicy: Always
+        name: notes-api
+        ports:
+        - containerPort: 8080
+          name: 8080tcp01
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /appConfig
+          name: application-config
+        - mountPath: /config
+          name: logback-config
+        - mountPath: /var/notes
+          name: log-dir
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 256
+          name: notes-api-config
+          optional: false
+        name: application-config
+      - configMap:
+          defaultMode: 256
+          name: notes-api-logback
+          optional: false
+        name: logback-config
+      - hostPath:
+          path: /var/notes
+          type: DirectoryOrCreate
+        name: log-dir
+status: {}

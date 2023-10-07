@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /notes-api
+
+management:
+  health:
+    defaults:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+
+app:
+  elasticsearch:
+    endpoint: es-test.notes.charter.com:9000
+    connection-timeout-ms: 30000
+    socket-timeout-ms: 30000
+    insertedTimeLessThan: now/m
+    insertedTimeGreaterThan: now-24h/m
+  executor-service:
+    parallelism: 15
+  spectrumSo:
+    #spcAccountDivision-url: https://spectrumcoreuat.charter.com/spectrum-core/services/account/ept/getSpcAccountDivisionV1x1
+    spcAccountDivision-url: https://spectrumcoreuat.charter.com:7443/spectrum-core/services/account/ept/getSpcAccountDivisionV1x1
+    ws:
+      connection-timeout-ms: 30000
+      read-timeout-ms: 30000
+      keystore:
+        file-path: ./notes-test-keystore.p12
+        password: 123456
+      truststore:
+        file-path: ./so-uat-truststore.jks
+        password: 123456

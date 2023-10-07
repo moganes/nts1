@@ -1,0 +1,98 @@
+﻿apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "18"
+    field.cattle.io/creatorId: user-wrs7d
+    field.cattle.io/publicEndpoints: '[{"addresses":["22.239.1.22"],"port":32280,"protocol":"TCP","serviceName":"kafka-consumers:noc-snmp-consumer-nodeport","allNodes":true},{"nodeName":"c-lz7qx:m-e522a13e5e8b","addresses":["22.239.1.26"],"port":9292,"protocol":"TCP","podName":"kafka-consumers:noc-snmp-consumer-599f7c89f6-kfmn2","allNodes":false},{"nodeName":"c-lz7qx:m-f04f4ba6208d","addresses":["22.239.1.27"],"port":9292,"protocol":"TCP","podName":"kafka-consumers:noc-snmp-consumer-599f7c89f6-9q7bk","allNodes":false}]'
+  creationTimestamp: null
+  generation: 1
+  labels:
+    cattle.io/creator: norman
+    workload.user.cattle.io/workloadselector: deployment-kafka-consumers-noc-snmp-consumer
+  name: noc-snmp-consumer
+  selfLink: /apis/apps/v1beta2/namespaces/kafka-consumers/deployments/noc-snmp-consumer
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-kafka-consumers-noc-snmp-consumer
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cattle.io/timestamp: 2019-02-18T19:52:44Z
+        field.cattle.io/ports: '[[{"containerPort":9292,"dnsName":"noc-snmp-consumer-nodeport","kind":"NodePort","name":"9292tcp01","protocol":"TCP","sourcePort":0}]]'
+      creationTimestamp: null
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-kafka-consumers-noc-snmp-consumer
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: noc-consumer
+                operator: In
+                values:
+                - "true"
+      containers:
+      - env:
+        - name: LOGGING_CONFIG
+          value: /config/logback.xml
+        - name: SPRING_CONFIG_LOCATION
+          value: /appConfig/application.yml
+        image: 98.8.61.7:5000/notes-data-consumer:0.1.7
+        imagePullPolicy: Always
+        name: noc-snmp-consumer
+        ports:
+        - containerPort: 9292
+          hostPort: 9292
+          name: 9292tcp01
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /config
+          name: logback-config
+        - mountPath: /appConfig
+          name: application-config
+        - mountPath: /var/log/notes/noc
+          name: log-dir
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 256
+          name: noc-snmp-consumer-logback
+          optional: false
+        name: logback-config
+      - configMap:
+          defaultMode: 256
+          name: noc-snmp-consumer-app-config
+          optional: false
+        name: application-config
+      - hostPath:
+          path: /var/log/notes/noc
+          type: ""
+        name: log-dir
+status: {}

@@ -1,0 +1,46 @@
+spring:
+  profiles:
+    active: ${ENVIRONMENT}
+  #  dao:
+#    url: http://charternotesvm2.asynchrony.com:8086
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        order_inserts: true
+        jdbc:
+          batch_size: 20
+        lob:
+          non_contextual_creation: true
+  datasource:
+    url: jdbc:postgresql://22.239.129.50:5432/postgres?ApplicationName=notes-api
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password:
+    hikari:
+      #idle-timeout: 10000
+      idleTimeout: 10000
+      minimumIdle: 5
+      maximumPoolSize: 30
+      connectionTimeout: 30000
+      #connectionTestQuery : SELECT 1 If your driver supports JDBC4 we strongly recommend not setting this property.
+      poolName: NOTES_Hikari_Pool
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+
+spring:
+  profiles: asy
+  datasource:
+    url: jdbc:postgresql://22.239.129.50:5432/postgres?ApplicationName=notes-api
+    username: postgres
+    password: ~pEDVz8\K8K{tbs[

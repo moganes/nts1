@@ -1,0 +1,59 @@
+﻿apiVersion: v1
+data:
+  logback.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+        <property name="LOG_PATH" value="/var/notes/api/notes"/>
+
+        <appender name="RollingFile"
+                  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/notes-api.log</file>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+                </Pattern>
+            </encoder>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <maxHistory>2</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>500MB</totalSizeCap>
+                <fileNamePattern>${LOG_PATH}/notes-api-%d{yyyy-MM-dd}.%i.log
+                </fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy
+                        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="Async-Appender" class="ch.qos.logback.classic.AsyncAppender" queueSize="10000">
+            <appender-ref ref="RollingFile"/>
+        </appender>
+
+        <root level="ERROR" additivity="false">
+            <appender-ref ref="Async-Appender"/>
+        </root>
+
+        <logger name="com.spectrum.notesapi" level="INFO" additivity="false">
+            <appender-ref ref="Async-Appender"/>
+        </logger>
+
+        <logger name="org.springframework" level="ERROR" additivity="false">
+            <appender-ref ref="Async-Appender"/>
+        </logger>
+
+    </configuration>
+kind: ConfigMap
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-ndlhk
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"logback.xml":"\u003c?xml version=\"1.0\" encoding=\"UTF-8\"?\u003e\n\u003cconfiguration\u003e\n    \u003cinclude resource=\"org/springframework/boot/logging/logback/defaults.xml\"/\u003e\n    \u003cinclude resource=\"org/springframework/boot/logging/logback/console-appender.xml\"/\u003e\n    \u003cproperty name=\"LOG_PATH\" value=\"/var/notes/api/notes\"/\u003e\n\n    \u003cappender name=\"RollingFile\"\n              class=\"ch.qos.logback.core.rolling.RollingFileAppender\"\u003e\n        \u003cfile\u003e${LOG_PATH}/notes-api.log\u003c/file\u003e\n        \u003cencoder class=\"ch.qos.logback.classic.encoder.PatternLayoutEncoder\"\u003e\n            \u003cPattern\u003e\n                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n\n            \u003c/Pattern\u003e\n        \u003c/encoder\u003e\n\n        \u003crollingPolicy class=\"ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy\"\u003e\n            \u003cmaxHistory\u003e2\u003c/maxHistory\u003e\n            \u003cmaxFileSize\u003e100MB\u003c/maxFileSize\u003e\n            \u003ctotalSizeCap\u003e500MB\u003c/totalSizeCap\u003e\n            \u003cfileNamePattern\u003e${LOG_PATH}/notes-api-%d{yyyy-MM-dd}.%i.log\n            \u003c/fileNamePattern\u003e\n            \u003ctimeBasedFileNamingAndTriggeringPolicy\n                    class=\"ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP\"\u003e\n                \u003cmaxFileSize\u003e100MB\u003c/maxFileSize\u003e\n            \u003c/timeBasedFileNamingAndTriggeringPolicy\u003e\n        \u003c/rollingPolicy\u003e\n    \u003c/appender\u003e\n\n    \u003cappender name=\"Async-Appender\" class=\"ch.qos.logback.classic.AsyncAppender\" queueSize=\"10000\"\u003e\n        \u003cappender-ref ref=\"RollingFile\"/\u003e\n    \u003c/appender\u003e\n\n    \u003croot level=\"ERROR\" additivity=\"false\"\u003e\n        \u003cappender-ref ref=\"Async-Appender\"/\u003e\n    \u003c/root\u003e\n\n    \u003clogger name=\"com.spectrum.notesapi\" level=\"INFO\" additivity=\"false\"\u003e\n        \u003cappender-ref ref=\"Async-Appender\"/\u003e\n    \u003c/logger\u003e\n\n    \u003clogger name=\"org.springframework\" level=\"ERROR\" additivity=\"false\"\u003e\n        \u003cappender-ref ref=\"Async-Appender\"/\u003e\n    \u003c/logger\u003e\n\n\u003c/configuration\u003e"},"kind":"ConfigMap","metadata":{"annotations":{"field.cattle.io/creatorId":"user-ndlhk"},"creationTimestamp":null,"labels":{"cattle.io/creator":"norman"},"name":"notes-api-logback","namespace":"microservices-test","selfLink":"/api/v1/namespaces/development/configmaps/notes-api-logback"}}
+  creationTimestamp: null
+  labels:
+    cattle.io/creator: norman
+  name: notes-api-logback
+  selfLink: /api/v1/namespaces/microservices-test/configmaps/notes-api-logback

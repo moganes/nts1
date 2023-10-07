@@ -1,0 +1,48 @@
+stages:
+  - build
+  - test
+  - package
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - swarm-manager
+  script:
+    - echo "build stage"
+    - echo "${deploy_password}" | docker login -u "${deploy_user}" "${CI_REGISTRY}" --password-stdin
+    - mvn clean package -Dmaven.test.skip=true
+
+test:
+  stage: test
+  tags:
+    - swarm-worker
+  script:
+    - echo "test stage"
+    - mvn verify
+  artifacts:
+    paths:
+    - target/site/jacoco
+    expire_in: 30 days
+
+package:
+  stage: package
+  only:
+    - master
+  tags:
+    - swarm-worker
+  script:
+    - echo "package stage"
+    - mvn install
+    - docker tag ${CI_REGISTRY_IMAGE}:1.0-SNAPSHOT ${CI_REGISTRY_IMAGE}:latest
+    - echo "${deploy_password}" | docker login -u "${deploy_user}" "${CI_REGISTRY}" --password-stdin
+    - docker push ${CI_REGISTRY_IMAGE}:latest
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  tags:
+    - swarm-manager
+  script:
+    -  docker stack deploy --with-registry-auth --prune -c docker-compose.yml ${CI_PROJECT_NAME}_stack

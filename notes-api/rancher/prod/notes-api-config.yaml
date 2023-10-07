@@ -1,0 +1,58 @@
+﻿apiVersion: v1
+data:
+  application.yml: |-
+    server:
+      port: 8080
+      servlet:
+        context-path: /notes-api
+
+    management:
+      health:
+        defaults:
+          enabled: true
+      endpoints:
+        enabled-by-default: true
+        web:
+          exposure:
+            include: "*"
+
+    app:
+      elasticsearch:
+        endpoint: es-prod.notes.charter.com:9000
+        connection-timeout-ms: 30000
+        socket-timeout-ms: 30000
+        insertedTimeLessThan: now/m
+        insertedTimeGreaterThan: now-24h/m
+        smb-insertedTimeLessThan: now/m
+        smb-insertedTimeGreaterThan: now-30h/m
+      executor-service:
+        parallelism: 15
+      spectrumSo:
+        spcAccountDivision-url: https://spectrumcore.charter.com:7443/spectrum-core/services/account/ept/getSpcAccountDivisionV1x1
+        ws:
+          connection-timeout-ms: 30000
+          read-timeout-ms: 30000
+          keystore:
+            file-path: ./notes-prod-keystore.p12
+            password: 96yddujH3wFZ4YQ5
+          truststore:
+            file-path: ./so-prod-truststore.jks
+            password: c3rRN63gyY8VPpM8
+kind: ConfigMap
+metadata:
+  annotations:
+    field.cattle.io/creatorId: user-b8b7b
+    kubectl.kubernetes.io/last-applied-configuration: '{"apiVersion":"v1","data":{"application.yml":"server:\n  port:
+      8080\n  servlet:\n    context-path: /homeworld\nspring:\n  application:\n    name:
+      homeworld\nelastic:\n  insertedTimeLessThan: now\n  insertedTimeGreaterThan:
+      now-24h\nmanagement:\n  health:\n    defaults:\n      enabled: true\n  security:\n    enabled:
+      false\n  endpoints:\n    enabled-by-default: true\n    web:\n      exposure:\n        include:
+      \"*\"\napp:\n  elasticsearch:\n    endpoint: es-prod.notes.charter.com:9000\n    connection-timeout:
+      35\n    socket-timeout: 20\n  api:\n    getAllCMTS:\n      insertedTimeLessThan:
+      now\n      insertedTimeGreaterThan: now-24h\n    getCMTSInfoByNodeName:\n      insertedTimeLessThan:
+      now\n      insertedTimeGreaterThan: now-24h"},"kind":"ConfigMap","metadata":{"annotations":{"field.cattle.io/creatorId":"user-xrhkt"},"creationTimestamp":null,"labels":{"cattle.io/creator":"norman"},"name":"homeworld-api-config","namespace":"microservices-layer","selfLink":"/api/v1/namespaces/micro-services/configmaps/homeworld-api-config"}}'
+  creationTimestamp: null
+  labels:
+    cattle.io/creator: norman
+  name: notes-api-config
+  selfLink: /api/v1/namespaces/microservices-layer/configmaps/notes-api-config

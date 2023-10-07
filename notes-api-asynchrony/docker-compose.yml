@@ -1,0 +1,28 @@
+version: "3.1"
+
+services:
+  api:
+    image: registry-gitlab.asynchrony.com/proj-1592/notes-api:latest
+    hostname: api
+    ports:
+      - "8888:8080"
+    networks:
+      - poller
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    environment:
+     - ENVIRONMENT=asy
+
+networks:
+  poller:
+    driver: overlay

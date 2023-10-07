@@ -1,0 +1,46 @@
+stages:
+  - build
+  - test
+  - package
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - swarm-manager
+  script:
+    - echo "build stage"
+    - mvn clean package -Dmaven.test.skip=true
+
+test:
+  stage: test
+  tags:
+    - swarm-worker
+  script:
+    - echo "test stage"
+    - mvn verify
+
+package:
+  stage: package
+  only:
+    - master
+  tags:
+    - swarm-worker
+  script:
+    - echo "package stage"
+    - mvn install
+
+deploy:
+  stage: deploy
+  tags:
+    - swarm-worker
+  image: maven:3.3.9-jdk-8
+  script:
+    - 'ls'
+    - 'cp ci-settings.xml /root/.m2/settings.xml'
+    - 'sed -i "s/CI_JOB_TOKEN/${CI_JOB_TOKEN}/g" /root/.m2/settings.xml'
+#    - 'sed -i "s/PROJECT_ID/${CI_PROJECT_ID}/g" pom.xml'
+    - 'mvn deploy'
+  only:
+    - master
+

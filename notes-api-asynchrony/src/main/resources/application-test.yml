@@ -1,0 +1,35 @@
+spring:
+  profiles:
+    active: ${ENVIRONMENT}
+  #  dao:
+#    url: http://charternotesvm2.asynchrony.com:8086
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        order_inserts: true
+        jdbc:
+          batch_size: 20
+  datasource:
+    url: jdbc:postgresql://22.239.129.30:5432/postgres?ApplicationName=poller-data-purge-test
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: 7>xr9PTtFD#a.=4<
+    hikari:
+      #idle-timeout: 10000
+      idleTimeout: 10000
+      minimumIdle: 5
+      maximumPoolSize: 30
+      connectionTimeout: 30000
+      #connectionTestQuery : SELECT 1 If your driver supports JDBC4 we strongly recommend not setting this property.
+      poolName: NOTES_Hikari_Pool
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
